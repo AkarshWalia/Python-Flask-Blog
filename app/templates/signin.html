@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Sign In</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #1f1f1f, #3a3a3a);
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      color: #fff;
+    }
+
+    .form-container {
+      width: 400px;
+      background: #2c2c2c;
+      padding: 30px 35px;
+      border-radius: 12px;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+      animation: fadeIn 0.8s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+      0% {
+        opacity: 0;
+        transform: translateY(-15px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    h2 {
+      text-align: center;
+      color: #61dafb;
+      margin-bottom: 25px;
+    }
+
+    label {
+      display: block;
+      margin: 12px 0 5px;
+      color: #ddd;
+      font-weight: 500;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="password"] {
+      width: 100%;
+      padding: 10px;
+      border-radius: 8px;
+      border: none;
+      background-color: #1a1a1a;
+      color: #fff;
+      font-size: 15px;
+      transition: border 0.3s ease;
+    }
+
+    input:focus {
+      border: 1px solid #61dafb;
+      outline: none;
+    }
+
+    .error {
+      color: #ff6b6b;
+      font-size: 0.85em;
+      margin-bottom: 5px;
+    }
+
+    input[type="submit"],
+    .register-link {
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 8px;
+      margin-top: 15px;
+      font-size: 15px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    input[type="submit"] {
+      background-color: #61dafb;
+      color: #000;
+      font-weight: bold;
+    }
+
+    input[type="submit"]:hover {
+      background-color: #21a1f1;
+    }
+
+    .register-link {
+      background-color: #444;
+      color: #fff;
+      text-align: center;
+      text-decoration: none;
+      display: block;
+    }
+
+    .register-link:hover {
+      background-color: #555;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="form-container">
+    <h2>Sign In</h2>
+
+    
+
+
+    <form method="POST" action="/signIn">
+      {{ form.hidden_tag() }}
+
+      <label for="email">{{ form.email.label }}</label>
+      {{ form.email(id="email") }}
+      {% for error in form.email.errors %}
+        <div class="error">{{ error }}</div>
+      {% endfor %}
+
+      <label for="password">{{ form.password.label }}</label>
+      {{ form.password(id="password") }}
+      {% for error in form.password.errors %}
+        <div class="error">{{ error }}</div>
+      {% endfor %}
+
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          {% for category, message in messages %}
+            <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+              {{ message }}
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+          {% endfor %}
+        {% endif %}
+      {% endwith %}
+
+      {{ form.submit() }}
+    </form>
+
+    <a href="{{ url_for('auth.register') }}" class="register-link">Don't have an account? Register</a>
+
+
+
+  </div>
+
+</body>
+</html>
+

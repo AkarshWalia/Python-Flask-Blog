@@ -1,0 +1,46 @@
+{% extends 'home.html' %}
+
+{% block title %}
+  My Account
+{% endblock %}
+
+{% block body %}
+  <section class="welcome">
+    <div style="width: 100%; max-width: 700px; margin: 0 auto; text-align: left;">
+      
+      <!-- Profile Info -->
+      <div style="text-align: center; margin-bottom: 30px;">
+        <img src="{{ url_for('static', filename='profile_pics/' + current_user.image) }}" 
+             alt="Profile Image" width="120" style="border-radius: 50%;">
+
+        <h2 style="margin-top: 10px; color: #61dafb;">{{ current_user.username }}</h2>
+        <p style="color: #ccc;">{{ current_user.email }}</p>
+      </div>
+
+      <!-- Update Form -->
+      <form method="POST" action="{{ url_for('main.account') }}" enctype="multipart/form-data">
+        {{ form.hidden_tag() }}
+
+        <label for="name">{{ form.name.label }}</label>
+        {{ form.name(id="name", style="width: 100%; padding: 10px; margin-bottom: 10px; background-color: #1c1c1c; border: 1px solid #444; border-radius: 8px; color: #fff;") }}
+        {% for error in form.name.errors %}
+          <div class="error" style="color: #ff6b6b; font-size: 0.85em;">{{ error }}</div>
+        {% endfor %}
+
+        <label for="email">{{ form.email.label }}</label>
+        {{ form.email(id="email", style="width: 100%; padding: 10px; margin-bottom: 10px; background-color: #1c1c1c; border: 1px solid #444; border-radius: 8px; color: #fff;") }}
+        {% for error in form.email.errors %}
+          <div class="error" style="color: #ff6b6b; font-size: 0.85em;">{{ error }}</div>
+        {% endfor %}
+
+        <label for="profile_picture">{{ form.profile_picture.label }}</label>
+        {{ form.profile_picture }}
+        {% for error in form.profile_picture.errors %}
+          <div class="error" style="color: #ff6b6b; font-size: 0.85em;">{{ error }}</div>
+        {% endfor %}
+
+        {{ form.submit(style="margin-top: 20px; width: 100%; padding: 12px; border: none; border-radius: 8px; background-color: #61dafb; color: #000; font-weight: bold; font-size: 16px; cursor: pointer;") }}
+      </form>
+    </div>
+  </section>
+{% endblock %}

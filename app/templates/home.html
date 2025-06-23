@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>{% block title %} Welcome Home {% endblock %}</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    /* Reset & base styles */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(145deg, #1c1c1c, #2e2e2e);
+      color: #fff;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: #121212;
+      padding: 15px 30px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    nav ul {
+      display: flex;
+      list-style: none;
+      gap: 20px;
+    }
+
+    nav a {
+      text-decoration: none;
+      color: #61dafb;
+      font-weight: 500;
+      transition: color 0.3s ease;
+    }
+
+    nav a:hover {
+      color: #ffffff;
+    }
+
+    .welcome {
+      text-align: center;
+      animation: fadeInUp 1s ease-out;
+      padding: 50px 20px;
+    }
+
+    .welcome h1 {
+      font-size: 2.8rem;
+      color: #61dafb;
+    }
+
+    .welcome p {
+      font-size: 1.2rem;
+      color: #ccc;
+      max-width: 600px;
+      margin: 10px auto 40px;
+    }
+
+    .post-container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    .card {
+      background-color: #1e1e1e;
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 25px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.3);
+      animation: fadeInUp 0.6s ease;
+    }
+
+    .card h4 a {
+      color: #61dafb;
+      text-decoration: none;
+    }
+
+    .card h4 a:hover {
+      color: #ffffff;
+    }
+
+    .card p {
+      color: #ddd;
+      margin: 10px 0;
+    }
+
+    .card .author {
+      display: flex;
+      align-items: center;
+      margin-top: 10px;
+    }
+
+    .author img {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin-right: 10px;
+      border: 2px solid #61dafb;
+    }
+
+    .author small {
+      color: #aaa;
+    }
+
+    .pagination {
+      text-align: center;
+      margin: 40px 0 20px;
+    }
+
+    .pagination a {
+      color: #61dafb;
+      text-decoration: none;
+      margin: 0 10px;
+      font-weight: bold;
+    }
+
+    .pagination span {
+      color: #aaa;
+    }
+
+    footer {
+      background-color: #181818;
+      text-align: center;
+      padding: 20px 10px;
+      font-size: 0.9rem;
+      color: #aaa;
+      border-top: 1px solid #333;
+      margin-top: auto;
+    }
+
+    footer:hover {
+      color: #61dafb;
+      transition: color 0.3s ease-in-out;
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @media (max-width: 600px) {
+      nav ul {
+        flex-direction: column;
+        gap: 10px;
+      }
+      .welcome h1 {
+        font-size: 2rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  {% block navbar %}
+  <nav>
+    <ul>
+      <li><a href="{{ url_for('main.home') }}">Home</a></li>
+      <li><a href="{{ url_for('main.post') }}">Create Post</a></li>
+    </ul>
+    <ul>
+      <li><a href="{{ url_for('main.account') }}">Account</a></li>
+      <li><a href="{{ url_for('auth.logout') }}">Logout</a></li>
+    </ul>
+  </nav>
+  {% endblock %}
+
+  {% block body %}
+
+      <div class="post-container">
+        <h2 style="color: #61dafb; text-align: center; margin: 40px 0 20px; animation: fadeInUp 0.6s ease;">All Posts</h2>
+
+        {% if posts.items %}
+          {% for post in posts.items %}
+            <div class="card">
+              <!-- Title and Image Row -->
+              <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 10px;">
+                <img src="{{ url_for('static', filename='profile_pics/' + post.author.image) }}"
+                    alt="Author"
+                    style="width: 50px; height: 50px; border-radius: 50%; object-fit: cover; border: 2px solid #61dafb;">
+                <h4 style="margin: 0;">
+                  <a href="{{ url_for('main.single_post', post_id=post.id) }}"
+                    style="color: #61dafb; text-decoration: none;">
+                    {{ post.title }}
+                  </a>
+                </h4>
+              </div>
+
+              <!-- Author and Date -->
+              <div style="margin-bottom: 10px;">
+                <small style="color: #aaa;">
+                  By <a href="#" style="color: #aaa; text-decoration: none;">{{ post.author.username }}</a> |
+                  {{ post.date_posted.strftime('%b %d, %Y') }}
+                </small>
+              </div>
+
+              <!-- Content -->
+              <p>{{ post.content }}</p>
+            </div>
+          {% endfor %}
+        {% else %}
+          <p style="text-align:center; color: #ccc;">No posts found.</p>
+        {% endif %}
+      </div>
+
+  <!-- Pagination -->
+  <div class="pagination">
+    {% if posts.has_prev %}
+      <a href="{{ url_for('main.home', page=posts.prev_num) }}">&laquo; Prev</a>
+    {% endif %}
+
+    <span>Page {{ posts.page }} of {{ posts.pages }}</span>
+
+    {% if posts.has_next %}
+      <a href="{{ url_for('main.home', page=posts.next_num) }}">Next &raquo;</a>
+    {% endif %}
+  </div>
+
+  {% endblock %}
+
+  {% block footer %}
+  <footer>
+    © 2025 FlaskApp. Crafted with ❤️ and Python.
+  </footer>
+  {% endblock %}
+</body>
+</html>

@@ -1,0 +1,158 @@
+{% extends 'home.html' %}
+
+{% block title %}
+  Single Post
+{% endblock %}
+
+{% block body %}
+<style>
+  .single-post-wrapper {
+    max-width: 700px;
+    margin: 60px auto 40px auto;
+    padding: 20px;
+    animation: fadeInUp 0.6s ease-in-out;
+  }
+
+  .post-card {
+    background-color: #1e1e1e;
+    border-radius: 12px;
+    padding: 25px;
+    box-shadow: 0 0 15px rgba(0,0,0,0.3);
+  }
+
+  .post-user {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+
+  .post-user img {
+    width: 55px;
+    height: 55px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 15px;
+    border: 2px solid #61dafb;
+  }
+
+  .post-user h4 {
+    margin: 0;
+    color: #fff;
+  }
+
+  .post-user p {
+    margin: 2px 0 0;
+    color: #aaa;
+    font-size: 0.8rem;
+  }
+
+  .post-title,
+  .post-content {
+    margin-bottom: 15px;
+  }
+
+  .post-title {
+    color: #61dafb;
+    font-size: 1.5rem;
+  }
+
+  .post-content {
+    color: #ddd;
+    line-height: 1.6;
+  }
+
+  .post-form input,
+  .post-form textarea {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border-radius: 6px;
+    border: 1px solid #444;
+    background-color: #2a2a2a;
+    color: #fff;
+    font-size: 1rem;
+  }
+
+  .btn {
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+  }
+
+  .btn-update {
+    background-color: #61dafb;
+    color: #000;
+    border: none;
+  }
+
+  .btn-delete {
+    background-color: #ff4d4d;
+    color: #fff;
+    border: none;
+  }
+
+  .action-buttons {
+    display: flex;
+    gap: 15px;
+    margin-top: 20px;
+  }
+
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+</style>
+
+<div class="single-post-wrapper">
+  <div class="post-card">
+    <!-- Top User Info Row -->
+    <div class="post-user">
+      <img src="{{ url_for('static', filename='profile_pics/' + current_user.image) }}" alt="Profile">
+      <div>
+        <h4>
+          <a href="#" style="color: inherit; text-decoration: none;">
+            {{ current_user.username }}
+          </a>
+        </h4>
+        <p>{{ post.date_posted.strftime('%b %d, %Y') }}</p>
+      </div>
+    </div>
+
+    <!-- Post Content or Edit Form -->
+    {% if form %}
+      <form method="POST" action="{{ url_for('main.update_post', post_id=post.id) }}" class="post-form">
+        {{ form.hidden_tag() }}
+
+        <label style="color: #fff;">{{ form.title.label }}</label>
+        {{ form.title() }}
+
+        <label style="color: #fff;">{{ form.content.label }}</label>
+        {{ form.content(rows=5) }}
+
+        {{ form.submit(class="btn btn-update") }}
+      </form>
+    {% else %}
+      <h3 class="post-title">{{ post.title }}</h3>
+      <p class="post-content">{{ post.content }}</p>
+
+      {% if post.author == current_user %}
+      <div class="action-buttons">
+        <a href="{{ url_for('main.update_post', post_id=post.id) }}" class="btn btn-update">Update Post</a>
+        <form method="POST" action="{{ url_for('main.delete_post', post_id=post.id) }}">
+          <button type="submit" onclick="return confirm('Are you sure you want to delete this post?');" class="btn btn-delete">Delete Post</button>
+        </form>
+      </div>
+      {% endif %}
+    {% endif %}
+  </div>
+</div>
+{% endblock %}
